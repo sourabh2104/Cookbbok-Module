@@ -1,3 +1,6 @@
+import frappe
+from frappe.utils import flt
+
 def execute(filters=None):
     columns, data = [], []
     
@@ -20,18 +23,19 @@ def execute(filters=None):
     # Fetch Data based on Filters
     if filters.get("project"):
         project = filters["project"]
+
         tasks = frappe.db.sql("""
             SELECT 
-                DATE(creation) AS date,
+                DATE(date) AS date,
                 COUNT(*) AS task_created_count
             FROM 
                 tabTask
             WHERE
                 project = %s
             GROUP BY 
-                DATE(creation)
+                DATE(date)
             ORDER BY 
-                DATE(creation) ASC
+                DATE(date) ASC
         """, (project), as_dict=1)
 
         for task in tasks:
